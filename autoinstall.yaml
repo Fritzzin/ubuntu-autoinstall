@@ -2,11 +2,13 @@
 autoinstall:
   version: 1
   
+  # 1. Configuração do Usuário
   locale: pt_BR.utf8
   keyboard:
     layout: br
   timezone: "America/Sao_Paulo" 
-  
+
+  # 2. Configuração de Rede
   packages:
     - git
     - vim
@@ -17,6 +19,7 @@ autoinstall:
     - gnupg
     - dotnet-sdk-8.0
 
+  # 3. Configuração de Software Adicional
   codecs:
     install: true
   drivers:
@@ -24,7 +27,7 @@ autoinstall:
 
   updates: all
 
-  # 3. Instalação de Snaps
+  # 4. Instalação de Snaps
   snaps:
     - name: postman
       channel: stable
@@ -32,7 +35,6 @@ autoinstall:
       channel: stable
       classic: true
 
-  # --- A MÁGICA PARA O MODO INTERATIVO ---
   # Estas linhas dizem ao instalador para NÃO automatizar estas telas
   interactive-sections:
     - identity
