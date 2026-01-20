@@ -2,27 +2,11 @@
 autoinstall:
   version: 1
   
-  # 1. Configuração de Repositórios e Chaves GPG
-  apt:
-    preserve_sources_list: false
-    sources:
-      anydesk:
-        source: "deb https://deb.anydesk.com all main"
-        key: https://keys.anydesk.com/repos/DEB-GPG-KEY
-      google-chrome:
-        source: "deb http://dl.google.com/linux/chrome/deb/ stable main"
-        key: https://dl.google.com/linux/linux_signing_key.pub
-      dbeaver:
-        source: "deb https://dbeaver.io/debs/dbeaver-ce /"
-        key: https://dbeaver.io/debs/dbeaver.gpg.key
-      vscode:
-        source: "deb https://packages.microsoft.com/repos/code stable main"
-        key: https://packages.microsoft.com/keys/microsoft.asc
-      nodesource:
-        source: "deb https://deb.nodesource.com/node_24.x nodistro main"
-        key: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
-
-  # 2. Instalação de Pacotes APT
+  locale: pt_BR.utf8
+  keyboard:
+    layout: br
+  timezone: "America/Sao_Paulo" 
+  
   packages:
     - git
     - vim
@@ -32,11 +16,13 @@ autoinstall:
     - ca-certificates
     - gnupg
     - dotnet-sdk-8.0
-    - anydesk
-    - google-chrome-stable
-    - dbeaver-ce
-    - code
-    - nodejs
+
+  codecs:
+    install: true
+  drivers:
+    install: true
+
+  updates: all
 
   # 3. Instalação de Snaps
   snaps:
@@ -45,13 +31,6 @@ autoinstall:
     - name: rider
       channel: stable
       classic: true
-
-  # 4. Comandos de Pós-Instalação (Docker )
-  late-commands:
-    - curtin in-target -- sh -c "curl -fsSL https://get.docker.com | sh"
-    # Nota: Como o usuário é criado interativamente, o comando abaixo 
-    # adicionará ao grupo docker o usuário que você criar na hora.
-    - curtin in-target -- sh -c "usermod -aG docker \$(ls /home | head -n 1 )"
 
   # --- A MÁGICA PARA O MODO INTERATIVO ---
   # Estas linhas dizem ao instalador para NÃO automatizar estas telas
