@@ -2,53 +2,27 @@
 autoinstall:
   version: 1
   
-  # 1. Configuração de Localidade e Teclado
-  locale: pt_BR.UTF-8
-  keyboard:
-    layout: br
-
-  # 2. Configuração de Repositórios e Chaves GPG (Inline para evitar erros de download)
+  # 1. Configuração de Repositórios e Chaves GPG
   apt:
     preserve_sources_list: false
     sources:
-      anydesk.list:
+      anydesk:
         source: "deb https://deb.anydesk.com all main"
-        key: |
-          -----BEGIN PGP PUBLIC KEY BLOCK-----
-          mQGNBF3p39wBDADWvV8Y6fGvX9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          mQGNBF3p39wBDADWvV8Y6fGvX9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          # [Nota: Substitua este bloco pelo conteúdo real da chave AnyDesk]
-          -----END PGP PUBLIC KEY BLOCK-----
-      google-chrome.list:
-        source: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
-        key: |
-          -----BEGIN PGP PUBLIC KEY BLOCK-----
-          mQENBFU3h4EBCADfV9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          # [Nota: Substitua este bloco pelo conteúdo real da chave Google]
-          -----END PGP PUBLIC KEY BLOCK-----
-      dbeaver.list:
+        key: https://keys.anydesk.com/repos/DEB-GPG-KEY
+      google-chrome:
+        source: "deb http://dl.google.com/linux/chrome/deb/ stable main"
+        key: https://dl.google.com/linux/linux_signing_key.pub
+      dbeaver:
         source: "deb https://dbeaver.io/debs/dbeaver-ce /"
-        key: |
-          -----BEGIN PGP PUBLIC KEY BLOCK-----
-          mQENBFU3h4EBCADfV9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          # [Nota: Substitua este bloco pelo conteúdo real da chave DBeaver]
-          -----END PGP PUBLIC KEY BLOCK-----
-      vscode.list:
-        source: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
-        key: |
-          -----BEGIN PGP PUBLIC KEY BLOCK-----
-          mQENBFU3h4EBCADfV9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          # [Nota: Substitua este bloco pelo conteúdo real da chave Microsoft]
-          -----END PGP PUBLIC KEY BLOCK-----
-      nodesource.list:
+        key: https://dbeaver.io/debs/dbeaver.gpg.key
+      vscode:
+        source: "deb https://packages.microsoft.com/repos/code stable main"
+        key: https://packages.microsoft.com/keys/microsoft.asc
+      nodesource:
         source: "deb https://deb.nodesource.com/node_24.x nodistro main"
-        key: |
-          -----BEGIN PGP PUBLIC KEY BLOCK-----
-          mQENBFU3h4EBCADfV9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9X9
-          # [Nota: Substitua este bloco pelo conteúdo real da chave NodeSource]
-          -----END PGP PUBLIC KEY BLOCK-----
+        key: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
 
-  # 3. Instalação de Pacotes APT
+  # 2. Instalação de Pacotes APT
   packages:
     - git
     - vim
@@ -64,7 +38,7 @@ autoinstall:
     - code
     - nodejs
 
-  # 4. Instalação de Snaps
+  # 3. Instalação de Snaps
   snaps:
     - name: postman
       channel: stable
@@ -72,13 +46,15 @@ autoinstall:
       channel: stable
       classic: true
 
-  # 5. Comandos de Pós-Instalação (Docker e AD )
+  # 4. Comandos de Pós-Instalação (Docker )
   late-commands:
     - curtin in-target -- sh -c "curl -fsSL https://get.docker.com | sh"
+    # Nota: Como o usuário é criado interativamente, o comando abaixo 
+    # adicionará ao grupo docker o usuário que você criar na hora.
     - curtin in-target -- sh -c "usermod -aG docker \$(ls /home | head -n 1 )"
-    - curtin in-target -- pam-auth-update --enable mkhomedir
 
-  # 6. Seções Interativas (Permite escolher disco e criar usuário na hora)
+  # --- A MÁGICA PARA O MODO INTERATIVO ---
+  # Estas linhas dizem ao instalador para NÃO automatizar estas telas
   interactive-sections:
     - identity
     - storage
